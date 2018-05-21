@@ -82,7 +82,7 @@ $forms = {
   :define => ->(sexp, bn) { bn[sexp[0]]= _eval(sexp[1], bn) },
   :lambda => ->(sexp, bn) { Lambda.new(bn, sexp[0], sexp[1])},
   :set! => ->(sexp, bn) { bn[sexp[0]]= _eval(sexp[1], bn) },
-
+  :eval => ->(sexp, bn) { _eval(sexp[0], bn) },
   :cond => ->(sexp, bn) {
     fcond(sexp, bn)
 },
