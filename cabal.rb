@@ -25,6 +25,7 @@ class Environment
     @binding.local_variable_set(:null, [])
     @aliases = {:+ => :add, :- => :sub, :* => :mult, :/ => :div, :null? => :is_empty,
       :zero? => :is_zero, :list? => :is_list, :eq? => :equal, :pair? => :is_list}
+
   end
   attr_reader :binding
   attr_accessor :aliases
@@ -80,6 +81,7 @@ $forms = {
   :quote => ->(sexp, bn) { sexp[0] },
   :define => ->(sexp, bn) { bn[sexp[0]]= _eval(sexp[1], bn) },
   :lambda => ->(sexp, bn) { Lambda.new(bn, sexp[0], sexp[1])},
+  :set! => ->(sexp, bn) { bn[sexp[0]]= _eval(sexp[1], bn) },
 
   :cond => ->(sexp, bn) {
     fcond(sexp, bn)
