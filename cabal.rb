@@ -83,7 +83,8 @@ $forms = {
 
   :cond => ->(sexp, bn) {
     fcond(sexp, bn)
-}
+},
+:defform => ->(sexp, bn) { $forms[sexp[0]] = sexp[1] }
 }
 
 class Lambda

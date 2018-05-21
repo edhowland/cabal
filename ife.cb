@@ -1,0 +1,4 @@
+# ife.cb - form of if/then/else
+[:defform, :ife, ->(sexp,bn) {
+  (_eval(sexp[0],bn) && _eval(sexp[1],bn)) || _eval(sexp[2],bn) }
+]
