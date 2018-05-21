@@ -1,0 +1,6 @@
+# length.cb - Cabal version of Scheme list
+[:define, :length, [:lambda, [:l],
+  [:cond, [[:null?, :l], []],
+  [:else, [:+, 1, [:length, [:cdr, :l]]]]
+]]
+]

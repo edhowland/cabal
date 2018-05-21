@@ -1,0 +1,168 @@
+# cabal.rb - small Ruby implementation of Scheme lang
+
+require 'readline'
+
+# helper funcs
+def safe_send obj, msg, *args
+  obj.respond_to?(msg) && obj.send(msg, *args)
+end
+
+# fcond clauses list - implements :cond on lists
+def fcond(cl, bn)
+  if cl.empty?
+    []
+  elsif cl[0][0] == :else
+      _eval(cl[0][1], bn)
+  else
+    (_eval(cl[0][0], bn) && _eval(cl[0][1], bn)) || fcond(cl[1..-1], bn)
+  end
+end
+
+# main classes
+class Environment
+  def initialize bn=binding
+    @binding = bn
+    @binding.local_variable_set(:null, [])
+    @aliases = {:+ => :add, :- => :sub, :* => :mult, :/ => :div, :null? => :is_empty,
+      :zero? => :is_zero, :list? => :is_list, :eq? => :equal, :pair? => :is_list}
+  end
+  attr_reader :binding
+  attr_accessor :aliases
+  def [](k)
+    temp = @aliases[k] || k
+    @binding.local_variable_get(temp)
+  end
+  def []=(k, v)
+    @binding.local_variable_set(k, v)
+  end
+  def dup(&blk)
+    result = self.class.new @binding.dup
+    yield result if block_given?
+    result
+  end
+  # bind a list of values to symbols in new environment
+  def bind(syms=[], values=[])
+    self.dup do |bn|
+    syms.zip(values).reject {|k,v| v.nil? }.each {|k, v| bn[k] = v }
+    end
+  end
+  def inspect
+    "#{self.class.name} alaiases count: #{@aliases.keys.length}"
+  end
+end
+
+$env=Environment.new(binding)
+
+{
+  :exit => ->() { exit },
+  :is_list => ->(o) { safe_send(o, :kind_of?, Array) },
+  :is_empty => ->(l) { safe_send(l, :empty?) },
+  :is_zero => ->(o) { safe_send(o, :zero?) },
+  :not => ->(o) { ! o },
+  :equal => ->(a, b) { a.equal? b },
+  :cons => ->(a, d) {
+    if d.kind_of?(Array)
+      [a] + d
+    else
+      [a, d]
+    end
+  },
+    :car => ->(sexp) { sexp.first },
+  :cdr => ->(sexp) { f, *r = *sexp; r},
+    :load => ->(s) { _eval(Kernel.eval(File.read(s))) },
+  :add => ->(a, b) { a + b },
+  :sub => ->(a, b) { a - b },
+  :mult => ->(a, b) { a * b},
+  :div => ->(a, b) { a / b }
+}.each_pair {|k,p| $env[k] = p }
+
+$forms = {
+  :quote => ->(sexp, bn) { sexp[0] },
+  :define => ->(sexp, bn) { bn[sexp[0]]= _eval(sexp[1], bn) },
+  :lambda => ->(sexp, bn) { Lambda.new(bn, sexp[0], sexp[1])},
+
+  :cond => ->(sexp, bn) {
+    fcond(sexp, bn)
+}
+}
+
+class Lambda
+# A Lambda consists of the environment:binding, the formal parameters and the body.
+  def initialize environment, formals, body 
+    @environment = environment
+    @formals = formals
+    @body = body
+  end
+  attr_reader :environment, :formals, :body
+  # curry args, returns new Lambda if args less than formals
+  def curry
+    self
+  end
+
+  def remains(enum)
+    result = []
+    loop do
+      result << enum.next
+    end
+    result
+  end
+  def bind(args)
+    bn = @binding.dup
+    p = @formals.each
+    args.each { |a| bn[p.next] = a }
+    [bn, remains(p)]
+  end
+  def call(*args)
+    [->() {
+      env = @environment.bind(@formals, args)
+    _eval(@body, env)}, 
+    ->() { 
+      nparms = @formals[0..(args.length - 1)]
+      self.class.new @environment.bind(nparms, args),  @formals[(args.length)..(-1)], @body
+    },
+    ->() { raise "Wrong number of arguments"}][(@formals.length <=> args.length)].call
+  end
+  def inspect
+    "#{self.class.name} formal parameters: #{@formals}"
+  end
+end
+
+def _eval(obj, bn=$env)
+  case obj
+  when Symbol
+      bn[obj]
+  when Array
+  fn = obj[0]
+    if $forms[fn]
+      $forms[fn].call(obj[1..-1], bn)
+    else
+        apply(_eval(obj[0], bn), obj[1..-1].map { |a| _eval(a,bn) })
+      end
+  else
+    obj
+  end
+end
+
+def apply(fn, args=[])
+  if args.empty?
+    fn.call
+  else
+   args.reduce(fn.curry) {|f,j| f.call(j)}
+ end
+end
+
+
+def read
+  expr = Readline.readline
+  expr.chomp unless expr.nil?
+  Kernel.eval(expr)
+end
+
+def repl
+  loop {
+    print "cabal> "
+  _ =  _eval(read)
+  break if _.nil?
+      p _
+  }
+end
