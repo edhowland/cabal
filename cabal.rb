@@ -24,7 +24,8 @@ class Environment
     @binding = bn
     @binding.local_variable_set(:null, [])
     @aliases = {:+ => :add, :- => :sub, :* => :mult, :/ => :div, :null? => :is_empty,
-      :zero? => :is_zero, :list? => :is_list, :eq? => :equal, :pair? => :is_list}
+      :zero? => :is_zero, :list? => :is_list, :eq? => :equal, :pair? => :is_list,
+      :boolean? => :is_bool, :symbol? => :is_symbol, :procedure? => :is_lambda}
 
   end
   attr_reader :binding
@@ -56,6 +57,12 @@ $env=Environment.new(binding)
 
 {
   :exit => ->() { exit },
+  :is_bool => ->(o) { o.class == TrueClass or o.class == FalseClass },
+  :b_to_s => ->(o) { "##{o.to_s[0]}" },
+  :is_symbol => ->(o) { o.kind_of?(Symbol) },
+  :is_lambda => ->(l) { l.kind_of?(Lambda) or l.kind_of?(Proc) },
+  :to_s => ->(o) { o.to_s },
+  :_inspect => ->(o) { o.inspect },
   :is_list => ->(o) { safe_send(o, :kind_of?, Array) },
   :is_empty => ->(l) { safe_send(l, :empty?) },
   :is_zero => ->(o) { safe_send(o, :zero?) },

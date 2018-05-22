@@ -1,0 +1,13 @@
+# inspect.cb - Cabal function to return string of object
+[:define, :inspect,
+  [:lambda, [:obj], 
+    [:cond, 
+    [[:boolean?, :obj], [:b_to_s, :obj]],
+    [[:procedure?, :obj], [:_inspect, :obj]],
+    [:else, [:to_s, :obj]]
+  ]
+
+]
+
+
+]
