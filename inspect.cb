@@ -4,6 +4,7 @@
     [:cond, 
     [[:boolean?, :obj], [:b_to_s, :obj]],
     [[:procedure?, :obj], [:_inspect, :obj]],
+[[:pair?, :obj], [:+, [:+, '(', [:join, [:map, :inspect, :obj], ' ']], ')']],
     [:else, [:to_s, :obj]]
   ]
 

@@ -78,6 +78,8 @@ $env=Environment.new(binding)
     :car => ->(sexp) { sexp.first },
   :cdr => ->(sexp) { f, *r = *sexp; r},
     :load => ->(s) { _eval(Kernel.eval(File.read(s))) },
+    :map => ->(fn, l) { l.map {|e| _eval([fn, e]) } },
+    :join => ->(l, s) { l.join(s) },
   :add => ->(a, b) { a + b },
   :sub => ->(a, b) { a - b },
   :mult => ->(a, b) { a * b},
