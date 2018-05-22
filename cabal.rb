@@ -80,6 +80,7 @@ $env=Environment.new(binding)
     :load => ->(s) { _eval(Kernel.eval(File.read(s))) },
     :map => ->(fn, l) { l.map {|e| _eval([fn, e]) } },
     :join => ->(l, s) { l.join(s) },
+    :_print => ->(o) { $stdout.print o },
   :add => ->(a, b) { a + b },
   :sub => ->(a, b) { a - b },
   :mult => ->(a, b) { a * b},
@@ -170,11 +171,18 @@ def read
   Kernel.eval(expr)
 end
 
+# startup
+def cabal
+  _eval [:load, 'inspect.cb']
+  _eval [:define, :print, [:lambda, [:o], [:_print, [:inspect, :o]]]]
+end
+
 def repl
   loop {
     print "cabal> "
   _ =  _eval(read)
   break if _.nil?
-      p _
+      _eval [:print, [:quote, _]]
+      puts
   }
 end
