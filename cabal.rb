@@ -2,6 +2,9 @@
 
 require 'readline'
 
+# exceptions
+class CabalError < RuntimeError; end
+
 # helper funcs
 def safe_send obj, msg, *args
   obj.respond_to?(msg) && obj.send(msg, *args)
@@ -85,6 +88,7 @@ $env=Environment.new(binding)
     :read_char => ->() { $stdin.getch },
     :join => ->(l, s) { l.join(s) },
     :_print => ->(o) { $stdout.print o },
+    :error => ->(s) { raise CabalError.new(s) },
   :add => ->(a, b) { a + b },
   :sub => ->(a, b) { a - b },
   :mult => ->(a, b) { a * b},

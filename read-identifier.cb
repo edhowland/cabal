@@ -1,0 +1,7 @@
+[:define, :read_identifier, [:lambda, [:ch],
+  [:cond,
+    [[:null?, :ch], ''],
+  [[:not, [:char_alphabetic, :ch]], :ch],
+    [:else,  [:+, :ch, [:read_identifier, [:read_char]]],
+  ]]]]
+
