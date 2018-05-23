@@ -25,7 +25,8 @@ class Environment
     @binding.local_variable_set(:null, [])
     @aliases = {:+ => :add, :- => :sub, :* => :mult, :/ => :div, :null? => :is_empty,
       :zero? => :is_zero, :list? => :is_list, :eq? => :equal, :pair? => :is_list,
-      :boolean? => :is_bool, :symbol? => :is_symbol, :procedure? => :is_lambda}
+      :boolean? => :is_bool, :symbol? => :is_symbol, :procedure? => :is_lambda,
+      "char-alphatic?".to_sym => :char_alphabetic, "char-numeric?".to_sym => :char_numeric}
 
   end
   attr_reader :binding
@@ -79,6 +80,9 @@ $env=Environment.new(binding)
   :cdr => ->(sexp) { f, *r = *sexp; r},
     :load => ->(s) { _eval(Kernel.eval(File.read(s))) },
     :map => ->(fn, l) { l.map {|e| _eval([fn, e]) } },
+    :char_alphabetic => ->(ch) { ch.kind_of?(String) && !ch.empty? && !ch[0].match(/[a-zA-Z]/).nil? },
+    :char_numeric => ->(ch) { ch.kind_of?(String) && !ch.empty? && !ch.match(/\d/).nil? },
+    :read_char => ->() { $stdin.getch },
     :join => ->(l, s) { l.join(s) },
     :_print => ->(o) { $stdout.print o },
   :add => ->(a, b) { a + b },
