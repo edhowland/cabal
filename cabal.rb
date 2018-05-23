@@ -118,6 +118,13 @@ $forms = {
         _eval(sexp[0], bn) && _eval([:and, *sexp[1..-1]], bn)
       end
 end
+},
+:let => ->(sexp, bn) {
+    binds = sexp[0]
+    body = sexp[1]
+    vars = binds.map(&:first)
+    exprs = binds.map(&:last)
+    _eval [[:lambda, vars, body], *exprs], bn
 }
 }
 
