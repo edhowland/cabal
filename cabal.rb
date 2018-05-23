@@ -96,7 +96,25 @@ $forms = {
   :cond => ->(sexp, bn) {
     fcond(sexp, bn)
 },
-:defform => ->(sexp, bn) { $forms[sexp[0]] = sexp[1] }
+:defform => ->(sexp, bn) { $forms[sexp[0]] = sexp[1] },
+:or => ->(sexp, bn) { 
+    if sexp.nil? or sexp.empty?
+      false
+    else
+      _eval(sexp[0], bn) || _eval([:or, *sexp[1..-1]], bn)
+    end
+  },
+  :and => ->(sexp, bn) { 
+  if sexp.nil? or sexp.empty?
+      true
+  else
+      if sexp[1].nil?
+        _eval(sexp[0], bn)
+      else
+        _eval(sexp[0], bn) && _eval([:and, *sexp[1..-1]], bn)
+      end
+end
+}
 }
 
 class Lambda
