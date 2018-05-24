@@ -1,0 +1,15 @@
+[:define, :read_token, [:lambda, [],
+   [:let, [[:first_char, [:read_char]]],
+      [:cond,
+            [[:char_whitespace, :first_char],
+             [:read_token]],
+            [:eq?, :first_char, '('],
+             LParen],
+            [[:eq?, :first_char, ')'],
+             RParen],
+            [[:char_alphabetic, :first_char],
+             [:read_identifier, :first_char]],
+  [[:char_numeric, :first_char],
+    [:read_number, :first_char]],
+[:else, [:error, 'bad juju']]
+]]]]

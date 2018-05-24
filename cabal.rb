@@ -5,6 +5,11 @@ require 'readline'
 # exceptions
 class CabalError < RuntimeError; end
 
+# Tokens
+LParen = 0xfffffffe
+RParen = 0xfffffffd
+
+
 # helper funcs
 def safe_send obj, msg, *args
   obj.respond_to?(msg) && obj.send(msg, *args)
