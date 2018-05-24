@@ -87,6 +87,8 @@ $env=Environment.new(binding)
     :car => ->(sexp) { sexp.first },
   :cdr => ->(sexp) { f, *r = *sexp; r},
     :load => ->(s) { _eval(Kernel.eval(File.read(s))) },
+    :mksym => ->(o) { o.to_sym },
+    :mkint => ->(o) { o.to_i },
     :map => ->(fn, l) { l.map {|e| _eval([fn, e]) } },
     :char_whitespace => ->(ch) { ch.kind_of?(String) && !ch.empty? && !ch.match(/\s/).nil? },
     :char_alphabetic => ->(ch) { ch.kind_of?(String) && !ch.empty? && !ch[0].match(/[a-zA-Z]/).nil? },
