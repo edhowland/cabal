@@ -214,6 +214,9 @@ end
 def cabal
   _eval [:load, 'inspect.cb']
   _eval [:define, :print, [:lambda, [:o], [:_print, [:inspect, :o]]]]
+  _eval [:load, 'read_number.cb']
+  _eval [:load, 'read_identifier.cb']
+  _eval [:load, 'read_token.cb']
 end
 
 def repl

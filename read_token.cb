@@ -1,4 +1,4 @@
-# read-token.cb
+# read-token.cb - lambda for [:read_token]
 [:define, :read_token, [:lambda, [],
    [:let, [[:first_char, [:read_char]]],
     [:cond,
