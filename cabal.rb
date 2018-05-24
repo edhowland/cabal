@@ -83,6 +83,7 @@ $env=Environment.new(binding)
   :cdr => ->(sexp) { f, *r = *sexp; r},
     :load => ->(s) { _eval(Kernel.eval(File.read(s))) },
     :map => ->(fn, l) { l.map {|e| _eval([fn, e]) } },
+    :char_whitespace => ->(ch) { ch.kind_of?(String) && !ch.empty? && !ch.match(/\s/).nil? },
     :char_alphabetic => ->(ch) { ch.kind_of?(String) && !ch.empty? && !ch[0].match(/[a-zA-Z]/).nil? },
     :char_numeric => ->(ch) { ch.kind_of?(String) && !ch.empty? && !ch.match(/\d/).nil? },
     :read_char => ->() { $stdin.getch },
