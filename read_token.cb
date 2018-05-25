@@ -3,8 +3,8 @@
    [:let, [[:first_char, [:read_char]]],
     [:cond,
       [[:char_whitespace, :first_char], [:read_token]],
-      [[:eq?, :first_char, '('], LParen],
-      [[:eq?, :first_char, ')'], RParen],
+      [[:eql?, :first_char, '('], LParen],
+      [[:eql?, :first_char, ')'], RParen],
             [[:char_alphabetic, :first_char], [:mksym, [:read_identifier, :first_char]]],
       [[:char_numeric, :first_char], [:mkint, [:read_number, :first_char]]],
       [:else, [:error, 'bad token']]

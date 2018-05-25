@@ -1,0 +1,9 @@
+# read_list.cb - implements Cabal read_list proc wrt read proc
+[:define, :read_list, [:lambda, [:list],
+  [:let, [[:atom, [:read]]],
+    [:cond,
+      [[:eql?, :atom, RParen], [->(l) { l.reverse }, :list]],
+      [:else, [:cons, :atom, [:read_list, :list]]]
+    ]
+  ]
+]]

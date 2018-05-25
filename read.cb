@@ -1,0 +1,9 @@
+# read.cb - implements the Cabal read procedure in terms of read_list
+[:define, :read, [:lambda, [],
+  [:let, [[:tok, [:read_token]]],
+    [:cond,
+    [[:eql?, :tok, LParen],  [:read_list, [:quote, []]]],
+    [:else, :tok]
+]
+  ]
+]]
