@@ -216,13 +216,10 @@ end
 
 # startup
 def cabal
-  _eval [:define, :_split, ->(s, r) { s.split(r) }]
   _eval [:load, 'inspect.cb']
   _eval [:define, :print, [:lambda, [:o], [:_print, [:inspect, :o]]]]
   _eval [:define, :_readline, ->() { Readline.readline.chomp.chars }]
-  _eval [:load, 'read_number.cb']
-  _eval [:load, 'read_identifier.cb']
-  _eval [:load, 'read_token.cb']
+  _eval [:define, :tokenize, ->(a) { to_tokens(a) }]
   _eval [:load, 'read_list.cb']
   _eval [:load, 'read.cb']
 end

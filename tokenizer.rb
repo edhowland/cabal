@@ -4,7 +4,7 @@ def get_string(enum, result='')
     result << enum.next
     get_string(enum, result)
         else
-    result.strip
+    result.strip.to_sym
       end
 end
 def get_number(enum, result='')
