@@ -1,13 +1,14 @@
 # cabal.rb - small Ruby implementation of Scheme lang
 
 require 'readline'
+require_relative 'tokenizer'
 
 # exceptions
 class CabalError < RuntimeError; end
 
 # Tokens
-LParen = 0xfffffffe
-RParen = 0xfffffffd
+#LParen = 0xfffffffe
+#RParen = 0xfffffffd
 
 
 # helper funcs

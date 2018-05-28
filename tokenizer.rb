@@ -1,4 +1,12 @@
 # tokenize.rb
+def get_string(enum, result='')
+    if enum.peek.match /[^\d\s\(\)]/
+    result << enum.next
+    get_string(enum, result)
+        else
+    result.strip
+      end
+end
 def get_number(enum, result='')
   if enum.peek.match /\d/
     result << enum.next
@@ -26,6 +34,8 @@ def to_tokens ary
     e.next
   elsif e.peek.match /\d/
     result << get_number(e)
+  elsif e.peek.match /[^\d\s\(\)]/
+    result << get_string(e)
   else
     result << :error
     e.next
