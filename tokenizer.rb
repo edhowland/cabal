@@ -1,18 +1,26 @@
 # tokenize.rb
 def get_string(enum, result='')
+  begin
     if enum.peek.match /[^\d\s\(\)]/
     result << enum.next
     get_string(enum, result)
         else
     result.strip.to_sym
       end
+        rescue StopIteration
+    result.strip.to_sym
+  end
 end
 def get_number(enum, result='')
+  begin
   if enum.peek.match /\d/
     result << enum.next
     get_number(enum, result)
   else
     result.strip.to_i
+  end
+  rescue StopIteration
+      result.strip.to_i
   end
 end
 
