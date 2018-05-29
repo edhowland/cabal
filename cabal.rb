@@ -91,6 +91,7 @@ $env=Environment.new(binding)
     :load => ->(s) { _eval(Kernel.eval(File.read(s))) },
     :mksym => ->(o) { o.to_sym },
     :mkint => ->(o) { o.to_i },
+  :eval => ->(sexp) { _eval(sexp) },
     :map => ->(fn, l) { l.map {|e| _eval([fn, e]) } },
     :char_whitespace => ->(ch) { ch.kind_of?(String) && !ch.empty? && !ch.match(/\s/).nil? },
     :char_alphabetic => ->(ch) { ch.kind_of?(String) && !ch.empty? && !ch[0].match(/[a-zA-Z\+\-\*\/]/).nil? },
@@ -110,7 +111,6 @@ $forms = {
   :define => ->(sexp, bn) { bn[sexp[0]]= _eval(sexp[1], bn) },
   :lambda => ->(sexp, bn) { Lambda.new(bn, sexp[0], sexp[1])},
   :set! => ->(sexp, bn) { bn[sexp[0]]= _eval(sexp[1], bn) },
-  :eval => ->(sexp, bn) { _eval(sexp[0], bn) },
   :cond => ->(sexp, bn) {
     fcond(sexp, bn)
 },
@@ -222,6 +222,7 @@ def cabal
   _eval [:define, :tokenize, ->(a) { to_tokens(a) }]
   _eval [:load, 'read_list.cb']
   _eval [:load, 'read.cb']
+  _eval [:define, :rep, [:lambda, [], [:print, [:eval, [:read, [:tokenize, [:_readline]]]]]]]
 end
 
 def repl
