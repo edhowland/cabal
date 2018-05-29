@@ -1,8 +1,0 @@
-# read_number.cb - lambda for [:read_number, :ch] where :ch is some char
-[:define, :read_number, [:lambda, [:ch],
-  [:cond,
-    [[:null?, :ch], ''],
-  [[:not, [:char_numeric, :ch]], ''],
-    [:else,  [:+, :ch, [:read_number, [:read_char]]],
-  ]]]]
-

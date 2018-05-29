@@ -1,8 +1,0 @@
-# read_identifier.cb - lambda for [:read_identifier, :ch] where :ch is some char
-[:define, :read_identifier, [:lambda, [:ch],
-  [:cond,
-    [[:null?, :ch], ''],
-  [[:not, [:char_alphabetic, :ch]], [->(c) { c.strip },  :ch]],
-    [:else,  [:+, :ch, [:read_identifier, [:read_char]]],
-  ]]]]
-
