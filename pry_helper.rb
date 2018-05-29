@@ -7,3 +7,10 @@ cabal
 
 
 require_relative 'repl'
+
+def tx
+  [LParen, :+, 1, LParen, :*, 4,5, RParen,RParen]
+end
+def tz
+  [LParen, :+, 1, 2, RParen]
+end

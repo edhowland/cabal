@@ -3,6 +3,7 @@
   [:let, [[:atom, [:car, :tokens]]],
     [:cond,
       [[:eql?, :atom, [:quote, RParen]], [->(l) { l.reverse }, :list]],
+[[:eql?, :atom, [:quote, LParen]], [:cons, [:read, :tokens], :list]],
       [:else, [:cons, :atom, [:read_list, [:cdr, :tokens], :list]]]
     ]
   ]
