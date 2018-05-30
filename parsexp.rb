@@ -23,10 +23,13 @@ def not_rparen stream, result=[]
   if stream[0] == RParen
     [result, stream]
       elsif stream.empty?
-        [false, stream]
+        unmatch(stream)
   else
-    result << stream[0]
-    not_rparen stream[1..-1], result
+    r,s = parse_sexp(stream)
+    if !(r == false)
+      result << r
+      not_rparen s, result
+    end
   end
 end
 
