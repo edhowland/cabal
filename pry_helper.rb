@@ -14,3 +14,9 @@ end
 def tz
   [LParen, :+, 1, 2, RParen]
 end
+def ty
+  [LParen, :+, LParen, :+, 1, 2, RParen, 6, RParen]
+end
+require_relative 'parsexp'
+
+_eval [:define, :tkl, [:lambda, [], [:tokenize, [:_readline]]]]
