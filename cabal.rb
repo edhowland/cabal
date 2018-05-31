@@ -226,8 +226,16 @@ def cabal
   _eval [:define, :print, [:lambda, [:o], [:_print, [:inspect, :o]]]]
   _eval [:define, :_readline, ->() { Readline.readline.chomp.chars }]
   _eval [:define, :tokenize, ->(a) { to_tokens(a) }]
-_eval [:define, :read, ->(array) { result = parse_sexp(array); raise CabalError.new if result.first == :error; result.first }] 
-  _eval [:define, :rep, [:lambda, [], [:print, [:eval, [:read, [:tokenize, [:_readline]]]]]]]
+_eval [:define, :read, ->(array) { 
+  r, s = parse_sexp(array)
+  result = [r]
+  until s.empty?
+    r, s = parse_sexp(s)
+    result << r
+    end
+  result
+  }] 
+  _eval [:define, :rep, [:lambda, [], [:print, [:eval_seq, [:read, [:tokenize, [:_readline]]]]]]]
 end
 
 def repl
