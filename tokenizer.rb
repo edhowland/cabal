@@ -40,6 +40,13 @@ def to_tokens ary
   elsif e.peek == ')'
     result << RParen
     e.next
+  elsif e.peek == '#'
+    e.next
+    if e.next == 't'
+      result << true
+    else
+      result << false
+    end
   elsif e.peek.match /\d/
     result << get_number(e)
   elsif e.peek.match /[^\d\s\(\)]/

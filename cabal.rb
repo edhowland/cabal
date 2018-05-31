@@ -222,9 +222,7 @@ def cabal
   _eval [:define, :print, [:lambda, [:o], [:_print, [:inspect, :o]]]]
   _eval [:define, :_readline, ->() { Readline.readline.chomp.chars }]
   _eval [:define, :tokenize, ->(a) { to_tokens(a) }]
-#  _eval [:load, 'read_list.cb']
-#  _eval [:load, 'read.cb']
-_eval [:define, :read, ->(array) { result = parse_sexp(array); raise CabalError.new if result.first == false; result.first }] 
+_eval [:define, :read, ->(array) { result = parse_sexp(array); raise CabalError.new if result.first == :error; result.first }] 
   _eval [:define, :rep, [:lambda, [], [:print, [:eval, [:read, [:tokenize, [:_readline]]]]]]]
 end
 
