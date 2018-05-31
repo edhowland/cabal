@@ -95,7 +95,7 @@ $env=Environment.new(binding)
     :mkint => ->(o) { o.to_i },
   :eval => ->(sexp) { _eval(sexp) },
   :force => ->(exp) { apply(exp, []) },
-#  :eval_in => ->(env, sexp) { _eval(sexp, env) },
+  :eval_seq => ->(seq) { result=nil; seq.each {|e| result=_eval(e)}; result },
     :map => ->(fn, l) { l.map {|e| _eval([fn, e]) } },
     :foldr => ->(p, i, l) { l.reduce(i) {|x,j| apply(p, [x, j]) }},
     :char_whitespace => ->(ch) { ch.kind_of?(String) && !ch.empty? && !ch.match(/\s/).nil? },
@@ -227,7 +227,6 @@ def cabal
   _eval [:define, :_readline, ->() { Readline.readline.chomp.chars }]
   _eval [:define, :tokenize, ->(a) { to_tokens(a) }]
 _eval [:define, :read, ->(array) { result = parse_sexp(array); raise CabalError.new if result.first == :error; result.first }] 
-_eval [:define, :eval_seq, [:lambda, [:sexp], [:foldr, :eval_in, $env, :sexp]]]
   _eval [:define, :rep, [:lambda, [], [:print, [:eval, [:read, [:tokenize, [:_readline]]]]]]]
 end
 
