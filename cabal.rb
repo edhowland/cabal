@@ -95,6 +95,7 @@ $env=Environment.new(binding)
     :mkint => ->(o) { o.to_i },
   :eval => ->(sexp) { _eval(sexp) },
     :map => ->(fn, l) { l.map {|e| _eval([fn, e]) } },
+    :foldr => ->(p, i, l) { l.reduce(i) {|x,j| apply(p, [x, j]) }},
     :char_whitespace => ->(ch) { ch.kind_of?(String) && !ch.empty? && !ch.match(/\s/).nil? },
     :char_alphabetic => ->(ch) { ch.kind_of?(String) && !ch.empty? && !ch[0].match(/[a-zA-Z\+\-\*\/]/).nil? },
     :char_numeric => ->(ch) { ch.kind_of?(String) && !ch.empty? && !ch.match(/\d/).nil? },
