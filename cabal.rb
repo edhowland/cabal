@@ -93,6 +93,7 @@ $env=Environment.new(binding)
     :loadr => ->(s) { _eval(Kernel.eval(File.read(s))) },
     :display => ->(o) { $stdout.puts(o) },
     :mksym => ->(o) { o.to_sym },
+    :str_chars => ->(s) { s.chars },
     :mkint => ->(o) { o.to_i },
   :eval => ->(sexp) { _eval(sexp) },
   :force => ->(exp) { apply(exp, []) },
@@ -229,10 +230,14 @@ end
 
 # startup
 def cabal
+  _eval [:define, :tokenize, ->(a) { to_tokens(a) }]
+  _eval [:define, :fread, ->(fname) { File.read(fname) }]
+  _eval [:define, :load, [:lambda, [:fname],
+    [:eval_seq, [:read, [:tokenize, [:str_chars, [:fread, :fname]]]]
+  ]]]
   _eval [:loadr, 'inspect.cbr']
   _eval [:define, :print, [:lambda, [:o], [:_print, [:inspect, :o]]]]
   _eval [:define, :_readline, ->() { Readline.readline.chomp.chars }]
-  _eval [:define, :tokenize, ->(a) { to_tokens(a) }]
 _eval [:define, :read, ->(array) { 
   r, s = parse_sexp(array)
   result = [r]
