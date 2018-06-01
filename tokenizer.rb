@@ -1,4 +1,16 @@
 # tokenize.rb
+def get_string(enum, result='')
+  begin
+    if enum.peek != '"'
+      result << enum.next
+      get_string(enum, result)
+    else
+      result
+    end
+  rescue StopIteration
+    result
+  end
+end
 def get_symbol(enum, result='')
   begin
     if enum.peek.match /[^\d\s\(\)]/
@@ -49,8 +61,11 @@ def to_tokens ary
     end
   elsif e.peek.match /\d/
     result << get_number(e)
-  elsif e.peek.match /[^\d\s\(\)]/
+  elsif e.peek.match /[^\d\s\(\)\"]/
     result << get_symbol(e)
+  elsif e.peek == '"'
+    e.next # toss it away
+    result << get_string(e)
   else
     result << :error
     e.next
