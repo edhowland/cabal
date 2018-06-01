@@ -64,8 +64,9 @@ def to_tokens ary
   elsif e.peek.match /[^\d\s\(\)\"]/
     result << get_symbol(e)
   elsif e.peek == '"'
-    e.next # toss it away
+    e.next
     result << get_string(e)
+    e.next
   else
     result << :error
     e.next
