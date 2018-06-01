@@ -18,4 +18,9 @@ def ty
   [LParen, :+, LParen, :+, 1, 2, RParen, 6, RParen]
 end
 
-_eval [:define, :tkl, [:lambda, [], [:tokenize, [:_readline]]]]
+#_eval [:define, :tkl, [:lambda, [], [:tokenize, [:_readline]]]]
+_eval [:load, "repl.cb"]
+def repl(prompt='cabal> ')
+
+  _eval [:repl, prompt]
+end

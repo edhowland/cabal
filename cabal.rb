@@ -250,7 +250,7 @@ _eval [:define, :read, ->(array) {
   _eval [:define, :rep, [:lambda, [], [:print, [:eval_seq, [:read, [:tokenize, [:_readline]]]]]]]
 end
 
-def repl
+def xrepl
   loop {
     print "cabal> "
   _ =  _eval(read)

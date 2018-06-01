@@ -1,1 +1,1 @@
-(define repl (lambda (prompt) (display prompt) (print (read (tokenize (_readline)))) (repl prompt)))
+(define repl (lambda (prompt) (display prompt) (print (eval_seq (read (tokenize (_readline))))) (repl prompt)))
