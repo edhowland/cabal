@@ -1,4 +1,0 @@
-# add.cb - Cabal method to add 2 nums
-[:define, :sum, [:lambda, [:a, :b],
-[:+, :a, :b]]
-]

@@ -90,7 +90,8 @@ $env=Environment.new(binding)
   },
     :car => ->(sexp) { sexp.first },
   :cdr => ->(sexp) { f, *r = *sexp; r},
-    :load => ->(s) { _eval(Kernel.eval(File.read(s))) },
+    :loadr => ->(s) { _eval(Kernel.eval(File.read(s))) },
+    :display => ->(o) { $stdout.puts(o) },
     :mksym => ->(o) { o.to_sym },
     :mkint => ->(o) { o.to_i },
   :eval => ->(sexp) { _eval(sexp) },
@@ -114,7 +115,7 @@ $env=Environment.new(binding)
 $forms = {
   :quote => ->(sexp, bn) { sexp[0] },
   :define => ->(sexp, bn) { bn[sexp[0]]= _eval(sexp[1], bn) },
-  :lambda => ->(sexp, bn) { Lambda.new(bn, sexp[0], sexp[1])},
+  :lambda => ->(sexp, bn) { Lambda.new(bn, sexp[0], sexp[1..-1])},
   :set! => ->(sexp, bn) { bn[sexp[0]]= _eval(sexp[1], bn) },
   :cond => ->(sexp, bn) {
     fcond(sexp, bn)
@@ -177,7 +178,7 @@ class Lambda
   def call(*args)
     [->() {
       env = @environment.bind(@formals, args)
-    _eval(@body, env)}, 
+    _eval_seq(@body, env)}, 
     ->() { 
       nparms = @formals[0..(args.length - 1)]
       self.class.new @environment.bind(nparms, args),  @formals[(args.length)..(-1)], @body
@@ -228,7 +229,7 @@ end
 
 # startup
 def cabal
-  _eval [:load, 'inspect.cb']
+  _eval [:loadr, 'inspect.cbr']
   _eval [:define, :print, [:lambda, [:o], [:_print, [:inspect, :o]]]]
   _eval [:define, :_readline, ->() { Readline.readline.chomp.chars }]
   _eval [:define, :tokenize, ->(a) { to_tokens(a) }]
