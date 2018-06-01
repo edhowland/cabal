@@ -95,7 +95,7 @@ $env=Environment.new(binding)
     :mkint => ->(o) { o.to_i },
   :eval => ->(sexp) { _eval(sexp) },
   :force => ->(exp) { apply(exp, []) },
-  :eval_seq => ->(seq) { result=nil; seq.each {|e| result=_eval(e)}; result },
+  :eval_seq => ->(seq) { _eval_seq(seq) },
     :map => ->(fn, l) { l.map {|e| _eval([fn, e]) } },
     :foldr => ->(p, i, l) { l.reduce(i) {|x,j| apply(p, [x, j]) }},
     :char_whitespace => ->(ch) { ch.kind_of?(String) && !ch.empty? && !ch.match(/\s/).nil? },
@@ -195,6 +195,7 @@ def _eval(obj, bn=$env)
       bn[obj]
   when Array
   fn = obj[0]
+  raise CabalError.new "Missing procedure for procedure application" if fn.nil?
     if $forms[fn]
       $forms[fn].call(obj[1..-1], bn)
     else
@@ -203,6 +204,11 @@ def _eval(obj, bn=$env)
   else
     obj
   end
+end
+def _eval_seq(seq, env=$env)
+     result=nil
+  seq.each {|e| result=_eval(e, env)}
+  result 
 end
 
 def apply(fn, args=[])
