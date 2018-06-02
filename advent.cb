@@ -1,7 +1,14 @@
+(define moves (quote ((north "A maze of twisty little dark passages") (east "endless meadow")  (west "endless meadow")  (south "endless meadow")))) 
+
 (define entrance "You are outside a a cave in a mountain. Ahead, to the north is the cave entrance. To the east, west and south are endless meadows")
 (define describe (lambda (place) (display place)))
 (define pos entrance)
-
+(define move (lambda (dir areas)
+  (cond ((null? areas) null)
+  (eq? dir (car areas)) (set! pos (car (cdr areas))))
+(else (move dir (cdr areas)))
+)
+))
 (define advent (lambda (prompt)
   (describe pos)
   (display prompt)
