@@ -19,8 +19,13 @@ def ty
 end
 
 #_eval [:define, :tkl, [:lambda, [], [:tokenize, [:_readline]]]]
+
 _eval [:load, "repl.cb"]
 def repl(prompt='cabal> ')
-
   _eval [:repl, prompt]
+end
+
+def advent
+  _eval [:load, "advent.cb"]
+  _eval [:advent, "?>"]
 end
