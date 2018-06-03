@@ -162,6 +162,9 @@ class Lambda
   def curry
     self
   end
+  def arity
+    @formals.length
+  end
 
   def remains(enum)
     result = []
@@ -184,7 +187,7 @@ class Lambda
       nparms = @formals[0..(args.length - 1)]
       self.class.new @environment.bind(nparms, args),  @formals[(args.length)..(-1)], @body
     },
-    ->() { raise "Wrong number of arguments"}][(@formals.length <=> args.length)].call
+    ->() { raise CabalError.new "Wrong number of arguments"}][(@formals.length <=> args.length)].call
   end
   def inspect
     "#{self.class.name} formal parameters: #{@formals}"
@@ -217,7 +220,7 @@ def apply(fn, args=[])
   if args.empty?
     fn.call
   else
-   args.reduce(fn.curry) {|f,j| f.call(j)}
+   args[0..(fn.arity-1)].reduce(fn.curry) {|f,j| f.call(j)}
  end
 end
 
