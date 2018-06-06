@@ -152,12 +152,16 @@ end
 
 class Lambda
 # A Lambda consists of the environment:binding, the formal parameters and the body.
-  def initialize environment, formals, body 
+  def initialize environment, formals, body, optional=nil
     @environment = environment
     @formals = formals
     @body = body
+    @optional = optional
   end
-  attr_reader :environment, :formals, :body
+  attr_reader :environment, :formals, :body, :optional
+  def optional?
+    !@optional.nil?
+  end
   # curry args, returns new Lambda if args less than formals
   def curry
     self
@@ -178,6 +182,11 @@ class Lambda
     p = @formals.each
     args.each { |a| bn[p.next] = a }
     [bn, remains(p)]
+  end
+  def smush
+    parms = @formals.clone
+    parms << @optional
+    self.class.new @environment, parms, @body
   end
   def call(*args)
     [->() {
@@ -219,6 +228,11 @@ end
 def apply(fn, args=[])
   if args.empty?
     fn.call
+  elsif fn.class == Lambda and fn.optional? and fn.arity < args.length
+#  binding.pry
+    nfn = fn.smush
+    nargs = args[0..(fn.arity-1)] + [args[fn.arity..-1]]
+        nfn.call(*nargs)
   else
    args[0..(fn.arity-1)].reduce(fn.curry) {|f,j| f.call(j)}
  end
